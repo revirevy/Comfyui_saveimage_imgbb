@@ -1,7 +1,7 @@
 [project]
 name = "Comfyui_saveimage_imgbb"
 description = "This custom node allow upscaling an image by a factor using a model."
-version = "1.0.0"
+version = "1.0.1"
 
 [project.urls]
 Repository = "https://github.com/revirevy/Comfyui_saveimage_imgbb"
