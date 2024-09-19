@@ -1,0 +1,16 @@
+[project]
+name = "Comfyui_saveimage_imgbb"
+description = "This custom node allow upscaling an image by a factor using a model."
+version = "1.0.1"
+
+[project.urls]
+Repository = "https://github.com/revirevy/Comfyui_saveimage_imgbb"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "revirevy"
+DisplayName = "Comfyui_saveimage_imgbb"
+Icon = ""
+
+
+# pyproject.toml
