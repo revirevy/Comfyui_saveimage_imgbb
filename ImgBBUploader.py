@@ -57,7 +57,7 @@ class ImgBBUploader:
             "key": api_key,
             "image": base64_image,
         }
-
+        max_retries = 4
         for attempt in range(max_retries):
             try:
                 response = requests.post(url, data=payload, timeout=timeout)
