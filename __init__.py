@@ -5,6 +5,6 @@
 @description: This custom node allow save image to imgbb.
 """
 
-from .SimpleMath import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
+from .ImgBBUploader import ImgBBUploader, NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
 
-__all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
+__all__ = ['ImgBBUploader', 'NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
