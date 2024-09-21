@@ -58,18 +58,27 @@ class ImgBBUploader:
             "image": base64_image,
         }
 
-        try:
-            response = requests.post(url, data=payload)
-            result = response.json()
+        for attempt in range(max_retries):
+            try:
+                response = requests.post(url, data=payload, timeout=timeout)
+                response.raise_for_status()  # Raise an exception for bad status codes
+                result = response.json()
 
-            if result.get("success"):
-                return result["data"]["url"], result["data"]["delete_url"]
-            else:
-                error_message = result.get("error", {}).get("message", "Unknown error")
-                return f"Error: {error_message}", ""
-        except Exception as e:
-            return f"Error: {str(e)}", ""
- 
+                if result.get("success"):
+                    return result["data"]["url"], result["data"]["delete_url"]
+                else:
+                    error_message = result.get("error", {}).get("message", "Unknown error")
+                    return f"Error: {error_message}", ""
+            except requests.exceptions.RequestException as e:
+                if attempt == max_retries - 1:
+                    return f"Error: Failed to upload after {max_retries} attempts. Last error: {str(e)}", ""
+                else:
+                    print(f"Upload attempt {attempt + 1} failed. Retrying...")
+                    time.sleep(2 ** attempt)  # Exponential backoff
+
+        return "Error: Unexpected end of upload function", ""
+
+
 # A dictionary that contains all nodes you want to export with their names
 NODE_CLASS_MAPPINGS = {
     "ImgBBUploader": ImgBBUploader
