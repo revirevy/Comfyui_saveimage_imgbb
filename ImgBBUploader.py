@@ -60,7 +60,7 @@ class ImgBBUploader:
         max_retries = 4
         for attempt in range(max_retries):
             try:
-                response = requests.post(url, data=payload, timeout=timeout)
+                response = requests.post(url, data=payload, timeout=60)
                 response.raise_for_status()  # Raise an exception for bad status codes
                 result = response.json()
 
