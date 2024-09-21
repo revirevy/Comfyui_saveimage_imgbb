@@ -28,11 +28,30 @@ class ImgBBUploader:
             return "Error: No API key provided", ""
 
         # Convert image tensor to base64
+        # image_data = image.cpu().numpy()[0].transpose(1, 2, 0)
+        # image_data = (image_data * 255).astype('uint8')
+        # _, buffer = cv2.imencode('.png', image_data)
+        # base64_image = base64.b64encode(buffer).decode('utf-8')
+        
+        # Convert image tensor to numpy array
         image_data = image.cpu().numpy()[0].transpose(1, 2, 0)
-        image_data = (image_data * 255).astype('uint8')
-        _, buffer = cv2.imencode('.png', image_data)
+        
+        # Ensure the image data is in the correct range (0-255) and type (uint8)
+        image_data = np.clip(image_data * 255, 0, 255).astype(np.uint8)
+        
+        # Check image dimensions and channels
+        if image_data.shape[2] not in [1, 3, 4]:
+            # Convert to RGB if necessary
+            image_data = cv2.cvtColor(image_data, cv2.COLOR_GRAY2RGB)
+        
+        try:
+            _, buffer = cv2.imencode('.png', image_data)
+        except cv2.error as e:
+            return f"Error encoding image: {str(e)}", ""
+        
         base64_image = base64.b64encode(buffer).decode('utf-8')
 
+    
         url = "https://api.imgbb.com/1/upload"
         payload = {
             "key": api_key,
