@@ -116,7 +116,7 @@ class ImgBBUploader:
                         print(f"Upload attempt {attempt + 1} failed. Retrying...")
                         time.sleep(2 ** attempt)  # Exponential backoff
     
-            return "Error: Unexpected end of upload function", ""
+        
         
         # for img in image:
         for (batch_number, ximage) in enumerate(image):
@@ -130,9 +130,10 @@ class ImgBBUploader:
             img_byte_arr = img_byte_arr.getvalue()
             
             base64_image = base64.b64encode(img_byte_arr).decode('utf-8')
-            upload_them(base64_image)
-            
+            xretour = upload_them(base64_image)
 
+        return xretour
+    
 
 # A dictionary that contains all nodes you want to export with their names
 NODE_CLASS_MAPPINGS = {
