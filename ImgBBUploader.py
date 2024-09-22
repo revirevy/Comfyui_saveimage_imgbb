@@ -87,6 +87,34 @@ class ImgBBUploader:
     CATEGORY = "image/upload"
     DESCRIPTION = "Upload the to your imgBB account."
  
+    def upload_them(xbase64_image):
+        url = "https://api.imgbb.com/1/upload"
+        payload = {
+            "key": api_key,
+            "image": xbase64_image,
+        }
+        max_retries = 4
+        for attempt in range(max_retries):
+            try:
+                response = requests.post(url, data=payload, timeout=60)
+                # response.raise_for_status()  # Raise an exception for bad status codes
+                result = response.json()
+
+                if result.get("success"):
+                    return result["data"]["url"], result["data"]["delete_url"]
+                else:
+                    error_message = result.get("error", {}).get("message", "Unknown error")
+                    return f"Error: {error_message}", ""
+            except requests.exceptions.RequestException as e:
+                if attempt == max_retries - 1:
+                    return f"Error: Failed to upload after {max_retries} attempts. Last error: {str(e)}", ""
+                else:
+                    print(f"Upload attempt {attempt + 1} failed. Retrying...")
+                    time.sleep(2 ** attempt)  # Exponential backoff
+
+        return "Error: Unexpected end of upload function", ""
+
+    
     def upload_to_imgbb(self, image, api_key):
         if not api_key:
             return "Error: No API key provided", ""
@@ -130,32 +158,6 @@ class ImgBBUploader:
             base64_image = base64.b64encode(img_byte_arr).decode('utf-8')
             upload_them(base64_image)
             
-        def upload_them(xbase64_image):
-            url = "https://api.imgbb.com/1/upload"
-            payload = {
-                "key": api_key,
-                "image": xbase64_image,
-            }
-            max_retries = 4
-            for attempt in range(max_retries):
-                try:
-                    response = requests.post(url, data=payload, timeout=60)
-                    # response.raise_for_status()  # Raise an exception for bad status codes
-                    result = response.json()
-    
-                    if result.get("success"):
-                        return result["data"]["url"], result["data"]["delete_url"]
-                    else:
-                        error_message = result.get("error", {}).get("message", "Unknown error")
-                        return f"Error: {error_message}", ""
-                except requests.exceptions.RequestException as e:
-                    if attempt == max_retries - 1:
-                        return f"Error: Failed to upload after {max_retries} attempts. Last error: {str(e)}", ""
-                    else:
-                        print(f"Upload attempt {attempt + 1} failed. Retrying...")
-                        time.sleep(2 ** attempt)  # Exponential backoff
-    
-            return "Error: Unexpected end of upload function", ""
 
 
 # A dictionary that contains all nodes you want to export with their names
