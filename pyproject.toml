@@ -1,7 +1,7 @@
 [project]
 name = "comfyui_saveimage_imgbb"
 description = "This custom node allow upscaling an image by a factor using a model."
-version = "1.13.5" # Custom Node version. Must be semantically versioned.
+version = "1.14.5" # Custom Node version. Must be semantically versioned.
 license = { file = "LICENSE.txt" }
 dependencies  = [] # Filled in from requirements.txt
 
