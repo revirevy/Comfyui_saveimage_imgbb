@@ -55,15 +55,12 @@ class ImgBBUploader:
         # # except cv2.error as e:
         # #     return f"Error encoding image: {str(e)}", ""
 
-        
-
         transform = transforms.ToPILImage()
-        pil_images = transform(image)
         
-         # Create an image from the data
-        # img = Image.open(io.BytesIO(image))
-
-        for img in pil_images:
+        for img in image:
+            
+            img = transform(image)
+            
             # Save the image with metadata to a byte stream
             img_byte_arr = io.BytesIO()
             img.save(img_byte_arr, format='PNG')
