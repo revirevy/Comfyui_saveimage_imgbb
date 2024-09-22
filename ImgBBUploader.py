@@ -85,7 +85,7 @@ class ImgBBUploader:
     FUNCTION = "upload_to_imgbb"
  
     CATEGORY = "image/upload"
-    DESCRIPTION = "Saves the input images to your imgBB account."
+    DESCRIPTION = "Upload the to your imgBB account."
  
     def upload_to_imgbb(self, image, api_key):
         if not api_key:
