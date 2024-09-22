@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 from PIL.PngImagePlugin import PngInfo
 import io
+from torchvision import transforms
 
 
 class ImgBBUploader:
@@ -54,7 +55,7 @@ class ImgBBUploader:
         # # except cv2.error as e:
         # #     return f"Error encoding image: {str(e)}", ""
 
-        from torchvision import transforms
+        
 
         transform = transforms.ToPILImage()
         pil_images = transform(image_tensor)
