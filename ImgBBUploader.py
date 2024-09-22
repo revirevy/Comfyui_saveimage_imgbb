@@ -28,7 +28,7 @@ class ImgBBUploader:
  
     CATEGORY = "image/upload"
  
-    def upload_to_imgbb(self, image_tensor, api_key):
+    def upload_to_imgbb(self, image, api_key):
         if not api_key:
             return "Error: No API key provided", ""
 
@@ -58,7 +58,7 @@ class ImgBBUploader:
         
 
         transform = transforms.ToPILImage()
-        pil_images = transform(image_tensor)
+        pil_images = transform(image)
         
          # Create an image from the data
         # img = Image.open(io.BytesIO(image))
