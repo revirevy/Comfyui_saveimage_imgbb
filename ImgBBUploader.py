@@ -7,7 +7,6 @@ from PIL.PngImagePlugin import PngInfo
 import io
 from torchvision import transforms
 
-
 class ImgBBUploader:
     def __init__(self):
         pass
