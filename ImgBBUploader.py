@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from PIL.PngImagePlugin import PngInfo
-import io
+import io, time
 from torchvision import transforms
 
 
