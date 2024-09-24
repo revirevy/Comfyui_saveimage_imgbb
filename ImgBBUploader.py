@@ -16,16 +16,16 @@ class LLM_prompt_generator:
         self.type = "output"
     
     @classmethod
-    def INPUT_TYPES(cls):
+    def INPUT_TYPES(s):
         return {
             "required": {
-                "LLM_API": ("STRING", {"default": ""}),
+                "LLM_API": ("STRING", {"default": "", "multiline": False}),
                 "user_prompt": ("STRING", {"default": ""}),
                 "model_name": ("STRING", {"default": ""}),
             },
         }
 
-    RETURN_TYPES = ("STRING",)
+    RETURN_TYPES = ("STRING")
     FUNCTION = "make_api_request"
     CATEGORY = "advanced/model"
     DESCRIPTION = "LLM model to generate prompt from openrouter."
@@ -126,10 +126,12 @@ class ImgBBUploader:
 
 # A dictionary that contains all nodes you want to export with their names
 NODE_CLASS_MAPPINGS = {
-    "ImgBBUploader": ImgBBUploader
+    "ImgBBUploader": ImgBBUploader,
+    "LLM_prompt_generator": LLM_prompt_generator
 }
  
 # A dictionary that contains the friendly/humanly readable titles for the nodes
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "ImgBBUploader": "Upload to ImgBB"
+    "ImgBBUploader": "Upload to ImgBB",
+    "LLM_prompt_generator": "LLM Prompt Generator openrouter"
 }
