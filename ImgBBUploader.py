@@ -7,7 +7,6 @@ from PIL.PngImagePlugin import PngInfo
 import io, time
 from torchvision import transforms
 
-import requests
 import json
 import torch
 from comfy.model_management import get_torch_device
@@ -22,7 +21,7 @@ class LLM_prompt_generator:
             "required": {
                 "LLM_API": ("STRING", {"default": ""}),
                 "user_prompt": ("STRING", {"default": ""}),
-                "model": ("STRING", {"default": ""}),
+                "model_name": ("STRING", {"default": ""}),
             },
         }
 
@@ -30,7 +29,7 @@ class LLM_prompt_generator:
     FUNCTION = "make_api_request"
     CATEGORY = "LLM"
 
-    def make_api_request(self, LLM_API, user_prompt,model_name):
+    def make_api_request(self, LLM_API, user_prompt, model_name):
         try:
             response = requests.post(
                 url="https://openrouter.ai/api/v1/chat/completions",
