@@ -27,7 +27,8 @@ class LLM_prompt_generator:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "make_api_request"
-    CATEGORY = "LLM"
+    CATEGORY = "advanced/model"
+    DESCRIPTION = "LLM model to generate prompt from openrouter."
 
     def make_api_request(self, LLM_API, user_prompt, model_name):
         try:
