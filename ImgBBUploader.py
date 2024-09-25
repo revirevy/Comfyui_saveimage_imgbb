@@ -20,7 +20,7 @@ class LLM_prompt_generator:
         return {
             "required": {
                 "LLM_API": ("STRING", {"default": "", "multiline": False}),
-                "user_prompt": ("STRING", {"default": ""}),
+                "user_prompt": ("STRING", {"default": "", "multiline": False}),
                 "model_name": ("STRING", {"default": ""}),
             },
         }
