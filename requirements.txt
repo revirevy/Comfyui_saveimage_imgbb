@@ -1,6 +1,4 @@
 opencv-python
-PIL
+pillow
 requests
-torchvision
-torch 
 json
