@@ -25,7 +25,7 @@ class LLM_prompt_generator:
             },
         }
 
-    RETURN_TYPES = ("STRING")
+    RETURN_TYPES = ("STRING",)
     FUNCTION = "make_api_request"
     CATEGORY = "advanced/model"
     DESCRIPTION = "LLM model to generate prompt from openrouter."
