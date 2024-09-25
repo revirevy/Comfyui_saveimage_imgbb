@@ -1,0 +1,6 @@
+cv2
+PIL
+requests
+torchvision
+torch 
+json
