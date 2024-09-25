@@ -66,6 +66,9 @@ class ImgBBUploader:
                 "image": ("IMAGE",),
                 "api_key": ("STRING", {"default": "", "multiline": False}),
             },
+            "hidden": {
+                "prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"
+            },
         }
  
     RETURN_TYPES = ("STRING", "STRING")
@@ -76,7 +79,7 @@ class ImgBBUploader:
     CATEGORY = "image/upload"
     DESCRIPTION = "Upload the to your imgBB account."
  
-    def upload_to_imgbb(self, image, api_key):
+    def upload_to_imgbb(self, image, api_key, prompt=None, extra_pnginfo=None):
         if not api_key:
             return "Error: No API key provided", ""
 
@@ -112,10 +115,17 @@ class ImgBBUploader:
             i = 255. * ximage.cpu().numpy()
             img = Image.fromarray(np.clip(i, 0, 255).astype(np.uint8))
             # img = transform(ximage)
-            
+            metadata = PngInfo()
+            if prompt is not None:
+                metadata.add_text("prompt", json.dumps(prompt))
+            if extra_pnginfo is not None:
+                for x in extra_pnginfo:
+                    metadata.add_text(x, json.dumps(extra_pnginfo[x]))
+                        
             # Save the image with metadata to a byte stream
             img_byte_arr = io.BytesIO()
-            img.save(img_byte_arr, format='PNG')
+            
+            img.save(img_byte_arr, format='PNG', pnginfo=metadata)
             img_byte_arr = img_byte_arr.getvalue()
             
             base64_image = base64.b64encode(img_byte_arr).decode('utf-8')
