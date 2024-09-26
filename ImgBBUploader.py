@@ -22,6 +22,13 @@ class LLM_prompt_generator:
                 "LLM_API": ("STRING", {"default": "", "multiline": False}),
                 "user_prompt": ("STRING", {"default": "", "multiline": False}),
                 "model_name": ("STRING", {"default": ""}),
+                 "max_tokens": ("INT", {"default": 250, "min": 1, "max": 4096}),
+                "temperature": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1}),
+                "top_p": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.1}),
+                "top_k": ("INT", {"default": 0, "min": 0}),
+                "frequency_penalty": ("FLOAT", {"default": 0.0, "min": -2.0, "max": 2.0, "step": 0.1}),
+                "presence_penalty": ("FLOAT", {"default": 0.0, "min": -2.0, "max": 2.0, "step": 0.1}),
+                "repetition_penalty": ("FLOAT", {"default": 2.0, "min": 0.0, "max": 2.0, "step": 0.1}),
             },
         }
 
@@ -41,7 +48,14 @@ class LLM_prompt_generator:
                     "model": model_name,
                     "messages": [
                         {"role": "user", "content": user_prompt}
-                    ]
+                    ],
+                    "max_tokens": max_tokens,
+                    "temperature": temperature,
+                    "top_p": top_p,
+                    "top_k": top_k,
+                    "frequency_penalty": frequency_penalty,
+                    "presence_penalty": presence_penalty,
+                    "repetition_penalty": repetition_penalty
                 })
             )
             
