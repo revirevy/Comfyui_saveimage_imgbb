@@ -51,7 +51,8 @@ class LLM_prompt_generator:
     CATEGORY = "advanced/model"
     DESCRIPTION = "LLM model to generate prompt from openrouter."
 
-    def make_api_request(self, LLM_API, user_prompt, model_name):
+    def make_api_request(self, LLM_API, user_prompt, model_name,custom_model,
+    max_tokens,    temperature,    top_p,    top_k,    frequency_penalty,    presence_penalty,    repetition_penalty):
         try:
             response = requests.post(
                 url="https://openrouter.ai/api/v1/chat/completions",
@@ -59,7 +60,7 @@ class LLM_prompt_generator:
                     "Authorization": f"Bearer {LLM_API}",
                 },
                 data=json.dumps({
-                    "model": model_name,
+                    "model": model_name if custom_model=="" else custom_model,
                     "messages": [
                         {"role": "user", "content": user_prompt}
                     ],
