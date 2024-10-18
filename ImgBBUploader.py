@@ -6,6 +6,7 @@ from PIL import Image
 from PIL.PngImagePlugin import PngInfo
 import io, time
 from torchvision import transforms
+from pyuploadcare import Uploadcare
 
 import json
 import torch
@@ -24,17 +25,34 @@ class LLM_prompt_generator:
                 "model_name": (["qwen/qwen-2-7b-instruct:free",
                                 "google/gemma-2-9b-it:free",
                                 "mistralai/mistral-7b-instruct:free",
+                                
                                 "microsoft/phi-3-mini-128k-instruct:free",
+                                "microsoft/phi-3-medium-128k-instruct:free",
+                                
                                 "meta-llama/llama-3-8b-instruct:free",
+                                 "meta-llama/llama-3.1-8b-instruct:free",
+                                "meta-llama/llama-3.1-70b-instruct:free",
+                                "meta-llama/llama-3.1-405b-instruct:free",
+                                
+                                "meta-llama/llama-3.2-1b-instruct:free",
+                                "meta-llama/llama-3.2-3b-instruct:free",
+                                "meta-llama/llama-3.2-11b-vision-instruct:free"
+                                
+                                
                                 "gryphe/mythomist-7b:free",
                                 "openchat/openchat-7b:free",
                                 "undi95/toppy-m-7b:free",
                                 "huggingfaceh4/zephyr-7b-beta:free",
                                 "openai/shap-e",
+                                "google/gemini-flash-1.5-8b-exp",
                                 "google/gemini-pro-1.5-exp",
-                                "meta-llama/llama-3.1-8b-instruct:free",
-                                "microsoft/phi-3-medium-128k-instruct:free",
-                ], {"default": "microsoft/phi-3-medium-128k-instruct:free"}),
+                               
+                                
+                                "nousresearch/hermes-3-llama-3.1-405b:free",
+                                "liquid/lfm-40b:free",
+                                
+                                
+                ], {"default": "meta-llama/llama-3.2-11b-vision-instruct:free"}),
                 "custom_model" : ("STRING", {"default": ""}),
                  "max_tokens": ("INT", {"default": 250, "min": 1, "max": 4096}),
                 "temperature": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1}),
@@ -94,6 +112,7 @@ class ImgBBUploader:
             "required": {
                 "image": ("IMAGE",),
                 "api_key": ("STRING", {"default": "", "multiline": False}),
+                "platform": ("STRING", {"default": "imgbb", "multiline": False}),
             },
             "hidden": {
                 "prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"
@@ -113,30 +132,39 @@ class ImgBBUploader:
             return "Error: No API key provided", ""
 
         def upload_them(xbase64_image):
-            url = "https://api.imgbb.com/1/upload"
-            payload = {
-                "key": api_key,
-                "image": xbase64_image,
-            }
-            max_retries = 4
-            for attempt in range(max_retries):
-                try:
-                    response = requests.post(url, data=payload, timeout=60)
-                    # response.raise_for_status()  # Raise an exception for bad status codes
-                    result = response.json()
-    
-                    if result.get("success"):
-                        return result["data"]["url"], result["data"]["delete_url"]
-                    else:
-                        error_message = result.get("error", {}).get("message", "Unknown error")
-                        return f"Error: {error_message}", ""
-                except requests.exceptions.RequestException as e:
-                    if attempt == max_retries - 1:
-                        return f"Error: Failed to upload after {max_retries} attempts. Last error: {str(e)}", ""
-                    else:
-                        print(f"Upload attempt {attempt + 1} failed. Retrying...")
-                        time.sleep(2 ** attempt)  # Exponential backoff
-    
+            if platform in ["imgbb",""] : 
+                url = "https://api.imgbb.com/1/upload"
+                   
+                payload = {
+                    "key": api_key,
+                    "image": xbase64_image,
+                }
+                max_retries = 4
+                for attempt in range(max_retries):
+                    try:
+                        response = requests.post(url, data=payload, timeout=60)
+                        # response.raise_for_status()  # Raise an exception for bad status codes
+                        result = response.json()
+        
+                        if result.get("success"):
+                            return result["data"]["url"], result["data"]["delete_url"]
+                        else:
+                            error_message = result.get("error", {}).get("message", "Unknown error")
+                            return f"Error: {error_message}", ""
+                    except requests.exceptions.RequestException as e:
+                        if attempt == max_retries - 1:
+                            return f"Error: Failed to upload after {max_retries} attempts. Last error: {str(e)}", ""
+                        else:
+                            print(f"Upload attempt {attempt + 1} failed. Retrying...")
+                            time.sleep(2 ** attempt)  # Exponential backoff
+            elif platform ==  "Uploadcare" :
+                # url = "https://api.imgbb.com/1/upload"
+                pubkey,seckey = api_key.split('|')
+                if not pubkey or not seckey:
+                    return "Error: No API key provided", ""
+                uploadcare = Uploadcare(public_key=pubkey, secret_key=seckey)
+                uploaded_file = uploadcare.upload(file_object)
+                return uploaded_file.cdn_url,""
         
         
         # for img in image:
