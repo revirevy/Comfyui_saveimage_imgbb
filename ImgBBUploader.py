@@ -127,7 +127,7 @@ class ImgBBUploader:
     CATEGORY = "image/upload"
     DESCRIPTION = "Upload the to your imgBB account."
  
-    def upload_to_imgbb(self, image, api_key, prompt=None, extra_pnginfo=None):
+    def upload_to_imgbb(self, image, api_key, platform, prompt=None, extra_pnginfo=None):
         if not api_key:
             return "Error: No API key provided", ""
 
