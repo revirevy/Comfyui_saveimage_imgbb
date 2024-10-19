@@ -112,7 +112,7 @@ class ImgBBUploader:
             "required": {
                 "image": ("IMAGE",),
                 "api_key": ("STRING", {"default": "", "multiline": False}),
-                "platform": ("STRING", {"default": "imgbb", "multiline": False}),
+                "platform": (["imgbb","Uploadcare"], {"default": "imgbb", "multiline": False}),
             },
             "hidden": {
                 "prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"
