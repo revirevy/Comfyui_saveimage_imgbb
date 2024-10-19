@@ -37,7 +37,7 @@ class LLM_prompt_generator:
                                 
                                 "meta-llama/llama-3.2-1b-instruct:free",
                                 "meta-llama/llama-3.2-3b-instruct:free",
-                                "meta-llama/llama-3.2-11b-vision-instruct:free"
+                                "meta-llama/llama-3.2-11b-vision-instruct:free",
                                 
                                 
                                 "gryphe/mythomist-7b:free",
