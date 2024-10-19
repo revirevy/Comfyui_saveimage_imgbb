@@ -183,10 +183,15 @@ class ImgBBUploader:
             img_byte_arr = io.BytesIO()
             
             img.save(img_byte_arr, format='PNG', pnginfo=metadata)
-            img_byte_arr = img_byte_arr.getvalue()
-            
-            base64_image = base64.b64encode(img_byte_arr).decode('utf-8')
-            xretour = upload_them(base64_image)
+
+            if platform ==  "Uploadcare" :
+                xretour = upload_them(img_byte_arr)
+
+            elif  platform ==  "imgbb" :
+                img_byte_arr = img_byte_arr.getvalue()
+                
+                base64_image = base64.b64encode(img_byte_arr).decode('utf-8')
+                xretour = upload_them(base64_image)
 
         return xretour
     
