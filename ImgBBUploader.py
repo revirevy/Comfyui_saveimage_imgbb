@@ -163,7 +163,7 @@ class ImgBBUploader:
                 if not pubkey or not seckey:
                     return "Error: No API key provided", ""
                 uploadcare = Uploadcare(public_key=pubkey, secret_key=seckey)
-                uploaded_file = uploadcare.upload(file_object)
+                uploaded_file = uploadcare.upload(xbase64_image)
                 return uploaded_file.cdn_url,""
         
         
