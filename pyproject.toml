@@ -1,7 +1,7 @@
 [project]
 name = "comfyui_saveimage_imgbb"
 description = "This custom node allow you to upload result images to imgbb."
-version = "1.40.5" # Custom Node version. Must be semantically versioned.
+version = "1.41.5" # Custom Node version. Must be semantically versioned.
 license = { file = "LICENSE.txt" }
 dependencies  = [] # Filled in from requirements.txt
 
