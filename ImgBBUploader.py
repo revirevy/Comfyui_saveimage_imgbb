@@ -7,6 +7,7 @@ from PIL.PngImagePlugin import PngInfo
 import io, time
 from torchvision import transforms
 from pyuploadcare import Uploadcare
+import tempfile
 
 import json
 import torch
@@ -179,15 +180,24 @@ class ImgBBUploader:
                 for x in extra_pnginfo:
                     metadata.add_text(x, json.dumps(extra_pnginfo[x]))
                         
-            # Save the image with metadata to a byte stream
-            img_byte_arr = io.BytesIO()
-            
-            img.save(img_byte_arr, format='PNG', pnginfo=metadata)
 
             if platform ==  "Uploadcare" :
-                xretour = upload_them(img_byte_arr)
+                with tempfile.NamedTemporaryFile(delete=True, suffix='.png') as temp_file:
+                    # Save the image with metadata to the temporary file
+                    img.save(temp_file, format='PNG', pnginfo=metadata)
+                    temp_file_path = temp_file.name
+                
+                    # Open the temporary file in binary read mode
+                    with open(temp_file_path, 'rb') as file_obj:
+                        # Now you can use fileno() and os.fstat()
+                        xretour = upload_them(file_obj)
 
             elif  platform ==  "imgbb" :
+                # Save the image with metadata to a byte stream
+                img_byte_arr = io.BytesIO()
+                
+                img.save(img_byte_arr, format='PNG', pnginfo=metadata)
+                # Create a temporary file
                 img_byte_arr = img_byte_arr.getvalue()
                 
                 base64_image = base64.b64encode(img_byte_arr).decode('utf-8')
