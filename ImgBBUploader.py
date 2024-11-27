@@ -228,7 +228,7 @@ class ImgBBUploader:
                         # Now you can use fileno() and os.fstat()
                         print(os.fstat(file_obj.fileno()))
                         xretour = upload_them(file_obj,temp_file_path)
-                        xretour[0] += "\nFILESTAT\n" + os.fstat(file_obj.fileno())
+                        xretour[0] += "\nFILESTAT\n" + os.fstat(file_obj.fileno()).__str__()
 
             elif  platform ==  "imgbb"  :
                 # Save the image with metadata to a byte stream
