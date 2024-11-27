@@ -1,4 +1,5 @@
 import requests
+import os
 import base64
 import cv2
 import numpy as np
@@ -38,6 +39,7 @@ class LLM_prompt_generator:
                                 "meta-llama/llama-3.2-1b-instruct:free",
                                 "meta-llama/llama-3.2-3b-instruct:free",
                                 "meta-llama/llama-3.2-11b-vision-instruct:free",
+                                "meta-llama/llama-3.2-90b-vision-instruct:free"
                                 
                                 
                                 "gryphe/mythomist-7b:free",
@@ -45,12 +47,19 @@ class LLM_prompt_generator:
                                 "undi95/toppy-m-7b:free",
                                 "huggingfaceh4/zephyr-7b-beta:free",
                                 "openai/shap-e",
+                                
                                 "google/gemini-flash-1.5-8b-exp",
                                 "google/gemini-pro-1.5-exp",
+                                "google/gemini-exp-1121:free",
+                                "google/learnlm-1.5-pro-experimental:free",
+                                "google/gemini-exp-1114:free"
                                
                                 
                                 "nousresearch/hermes-3-llama-3.1-405b:free",
                                 "liquid/lfm-40b:free",
+
+
+
                                 
                                 
                 ], {"default": "meta-llama/llama-3.2-11b-vision-instruct:free"}),
@@ -113,7 +122,8 @@ class ImgBBUploader:
             "required": {
                 "image": ("IMAGE",),
                 "api_key": ("STRING", {"default": "", "multiline": False}),
-                "platform": (["imgbb","Uploadcare"], {"default": "imgbb", "multiline": False}),
+                "platform": (["imgbb","Uploadcare","PhotoPrism"], {"default": "imgbb", "multiline": False}),
+                "host_address": ("STRING", {"default": "", "multiline": False}),
             },
             "hidden": {
                 "prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"
@@ -128,11 +138,11 @@ class ImgBBUploader:
     CATEGORY = "image/upload"
     DESCRIPTION = "Upload the to your imgBB account."
  
-    def upload_to_imgbb(self, image, api_key, platform, prompt=None, extra_pnginfo=None):
+    def upload_to_imgbb(self, image, api_key, platform, host_address, prompt=None, extra_pnginfo=None):
         if not api_key:
             return "Error: No API key provided", ""
 
-        def upload_them(xbase64_image):
+        def upload_them(xbase64_image,image_name=""):
             if platform in ["imgbb",""] : 
                 url = "https://api.imgbb.com/1/upload"
                    
@@ -166,7 +176,29 @@ class ImgBBUploader:
                 uploadcare = Uploadcare(public_key=pubkey, secret_key=seckey)
                 uploaded_file = uploadcare.upload(xbase64_image)
                 return uploaded_file.cdn_url,""
-        
+
+            elif platform == "PhotoPrism":  # New PhotoPrism upload logic
+                user_id, access_token = api_key.split("|")  # Assuming api_key is "user_id|access_token"
+                
+                files = {'file': (image_name, xbase64_image, 'image/png')}
+
+                try:
+                    photoprism_url = host_address
+                    headers = {
+                        "X-Auth-Token": f"{access_token}"
+                    }
+                    upload_url = f"{photoprism_url}/api/v1/users/{user_id}/upload/{access_token}"
+
+                    # Make the POST request to upload the photo
+                    response = requests.post(upload_url, files=files,headers=headers)
+
+                    return response.text,response.status_code
+
+                except requests.exceptions.RequestException as e:
+                    return f"Error uploading to PhotoPrism: {str(e)}", ""  
+
+
+
         
         # for img in image:
         for (batch_number, ximage) in enumerate(image):
@@ -181,7 +213,7 @@ class ImgBBUploader:
                     metadata.add_text(x, json.dumps(extra_pnginfo[x]))
                         
 
-            if platform ==  "Uploadcare" :
+            if platform ==  "Uploadcare" or platform ==  "PhotoPrism":
                 with tempfile.NamedTemporaryFile(delete=True, suffix='.png') as temp_file:
                     # Save the image with metadata to the temporary file
                     img.save(temp_file, format='PNG', pnginfo=metadata)
@@ -190,9 +222,9 @@ class ImgBBUploader:
                     # Open the temporary file in binary read mode
                     with open(temp_file_path, 'rb') as file_obj:
                         # Now you can use fileno() and os.fstat()
-                        xretour = upload_them(file_obj)
+                        xretour = upload_them(file_obj,temp_file_path)
 
-            elif  platform ==  "imgbb" :
+            elif  platform ==  "imgbb"  :
                 # Save the image with metadata to a byte stream
                 img_byte_arr = io.BytesIO()
                 
@@ -202,6 +234,8 @@ class ImgBBUploader:
                 
                 base64_image = base64.b64encode(img_byte_arr).decode('utf-8')
                 xretour = upload_them(base64_image)
+
+
 
         return xretour
     
