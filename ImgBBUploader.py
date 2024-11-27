@@ -181,7 +181,7 @@ class ImgBBUploader:
                 user_id, access_token = api_key.split("|")  # Assuming api_key is "user_id|access_token"
                 xlogs = "-".join([f"{x=}" for x in [user_id, access_token ,image_name]])
                 print(xlogs)   
-                files = {'file': (image_name, xbase64_image, 'image/png')}
+                files = {'file': ("INSTANTID" + os.path.basename(image_name), xbase64_image, 'image/png')}
                 
                 try:
                     photoprism_url = host_address
@@ -194,8 +194,8 @@ class ImgBBUploader:
                     print(xtmp)
                     # Make the POST request to upload the photo
                     response = requests.post(upload_url, files=files,headers=headers)
-                    logs += str(response.__dict__)
-                    return response.text + logs,response.status_code
+                    xlogs += str(response.__dict__)
+                    return response.text + xlogs,response.status_code
 
                 except requests.exceptions.RequestException as e:
                     return f"Error uploading to PhotoPrism: {str(e)}", ""  
