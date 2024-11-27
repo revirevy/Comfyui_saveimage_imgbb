@@ -181,7 +181,7 @@ class ImgBBUploader:
                 user_id, access_token = api_key.split("|")  # Assuming api_key is "user_id|access_token"
                 xlogs = "-".join([f"{x=}" for x in [user_id, access_token ,image_name]])
                 print(xlogs)   
-                files = {'file': ("INSTANTID" + os.path.basename(image_name), xbase64_image, 'image/png')}
+                files = {'file': ("INSTANTID_" + os.path.basename(image_name), xbase64_image, 'image/png')}
                 
                 try:
                     photoprism_url = host_address
@@ -193,8 +193,9 @@ class ImgBBUploader:
                     xlogs += xtmp
                     print(xtmp)
                     # Make the POST request to upload the photo
-                    response = requests.post(upload_url, files=files,headers=headers)
+                    response = requests.post(upload_url, files=files,headers=headers, timeout=60)
                     xlogs += str(response.__dict__)
+                    print(response.__dict__)
                     return response.text + xlogs,response.status_code
 
                 except requests.exceptions.RequestException as e:
@@ -225,7 +226,9 @@ class ImgBBUploader:
                     # Open the temporary file in binary read mode
                     with open(temp_file_path, 'rb') as file_obj:
                         # Now you can use fileno() and os.fstat()
+                        print(os.fstat(file_obj.fileno()))
                         xretour = upload_them(file_obj,temp_file_path)
+                        xretour[0] += "\nFILESTAT\n" + os.fstat(file_obj.fileno())
 
             elif  platform ==  "imgbb"  :
                 # Save the image with metadata to a byte stream
