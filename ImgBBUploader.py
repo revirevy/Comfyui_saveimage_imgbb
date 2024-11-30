@@ -176,31 +176,22 @@ class ImgBBUploader:
                 uploadcare = Uploadcare(public_key=pubkey, secret_key=seckey)
                 uploaded_file = uploadcare.upload(xbase64_image)
                 return uploaded_file.cdn_url,""
-
+                
             elif platform == "PhotoPrism":  # New PhotoPrism upload logic
-                user_id, access_token = api_key.split("|")  # Assuming api_key is "user_id|access_token"
-                xlogs = "-".join([f"{x=}" for x in [user_id, access_token ,image_name]])
-                print(xlogs)   
-                xfiles = {'file': ("INSTANTID_" + image_name.split('/')[-1], xbase64_image, 'image/png')}
-                print("INSTANTID_" + os.path.basename(image_name))
+  
+                xfiles = {'file': (f"instantid_{int(time.time())}.png" ,xbase64_image, 'image/png')}
+                print(f"instantid_{int(time.time())}.png")
                 try:
-                    photoprism_url = host_address
-                    headers = {
-                        "X-Auth-Token": f"{access_token}"
-                    }
-                    upload_url = f"{photoprism_url}/api/v1/users/{user_id}/upload/{access_token}"
-                    xtmp = "\n".join([f"{x=}" for x in [upload_url,photoprism_url]])
-                    xlogs += xtmp
-                    print(xtmp)
+                    upload_url = f"{host_address}/upload"
+
                     # Make the POST request to upload the photo
-                    response = requests.post(upload_url, files=xfiles, headers=headers, timeout=60)
+                    # response = requests.post(upload_url, files=xfiles, headers=headers, timeout=60)
+                    response = requests.post(upload_url, auth=("", api_key), files=xfiles, verify=False, timeout=10)
                     
                     # Raise an error for bad responses (4xx and 5xx)
                     response.raise_for_status()
                     
-                    xlogs += str(response.__dict__)
-                    print(response.__dict__)
-                    return response.text + xlogs,response.status_code
+                    return 'File uploaded successfully' if response.status_code==200 else f'Erreur importation code:{response.status_code} ',response.status_code 
 
                 except requests.exceptions.RequestException as e:
                     return f"Error uploading to PhotoPrism: {str(e)}", ""  
@@ -230,9 +221,9 @@ class ImgBBUploader:
                     # Open the temporary file in binary read mode
                     with open(temp_file_path, 'rb') as file_obj:
                         # Now you can use fileno() and os.fstat()
-                        print(os.fstat(file_obj.fileno()))
+                        # print(os.fstat(file_obj.fileno()))
                         xretour = upload_them(file_obj,temp_file_path)
-                        xretour = (xretour[0] + "\nFILESTAT\n" + os.fstat(file_obj.fileno()).__str__(), xretour[1])
+                        # xretour = (xretour[0] + "\nFILESTAT\n" + os.fstat(file_obj.fileno()).__str__(), xretour[1])
 
             elif  platform ==  "imgbb"  :
                 # Save the image with metadata to a byte stream
