@@ -39,7 +39,7 @@ class LLM_prompt_generator:
                                 "meta-llama/llama-3.2-1b-instruct:free",
                                 "meta-llama/llama-3.2-3b-instruct:free",
                                 "meta-llama/llama-3.2-11b-vision-instruct:free",
-                                "meta-llama/llama-3.2-90b-vision-instruct:free"
+                                "meta-llama/llama-3.2-90b-vision-instruct:free",
                                 
                                 
                                 "gryphe/mythomist-7b:free",
@@ -52,11 +52,18 @@ class LLM_prompt_generator:
                                 "google/gemini-pro-1.5-exp",
                                 "google/gemini-exp-1121:free",
                                 "google/learnlm-1.5-pro-experimental:free",
-                                "google/gemini-exp-1114:free"
-                               
+                                "google/gemini-exp-1114:free",
+
+                                "google/gemini-2.0-flash-thinking-exp:free',
+                                "google/gemini-2.0-flash-thinking-exp-1219:free",
+                                "google/gemini-2.0-flash-exp:free",
+                                "google/gemini-exp-1206:free",
+                                                              
                                 
                                 "nousresearch/hermes-3-llama-3.1-405b:free",
                                 "liquid/lfm-40b:free",
+
+                                "sophosympatheia/rogue-rose-103b-v0.2:free"
 
 
 
@@ -122,7 +129,7 @@ class ImgBBUploader:
             "required": {
                 "image": ("IMAGE",),
                 "api_key": ("STRING", {"default": "", "multiline": False}),
-                "platform": (["imgbb","Uploadcare","PhotoPrism"], {"default": "imgbb", "multiline": False}),
+                "platform": (["imgbb","Uploadcare","PhotoPrism"], {"default": "PhotoPrism", "multiline": False}),
                 "host_address": ("STRING", {"default": "", "multiline": False}),
             },
             "hidden": {
