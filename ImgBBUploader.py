@@ -54,7 +54,7 @@ class LLM_prompt_generator:
                                 "google/learnlm-1.5-pro-experimental:free",
                                 "google/gemini-exp-1114:free",
 
-                                "google/gemini-2.0-flash-thinking-exp:free',
+                                "google/gemini-2.0-flash-thinking-exp:free",
                                 "google/gemini-2.0-flash-thinking-exp-1219:free",
                                 "google/gemini-2.0-flash-exp:free",
                                 "google/gemini-exp-1206:free",
