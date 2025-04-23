@@ -9,7 +9,7 @@ import io, time
 from torchvision import transforms
 from pyuploadcare import Uploadcare
 import tempfile
-
+import datetime
 import json
 import torch
 from comfy.model_management import get_torch_device
@@ -212,8 +212,12 @@ class ImgBBUploader:
             img = Image.fromarray(np.clip(i, 0, 255).astype(np.uint8))
             # img = transform(ximage)
             metadata = PngInfo()
+            current_time = datetime.datetime.now().strftime("%Y:%m:%d %H:%M:%S")
+            
             if prompt is not None:
                 metadata.add_text("prompt", json.dumps(prompt))
+                metadata.add_text("DateTime", current_time) 
+
             if extra_pnginfo is not None:
                 for x in extra_pnginfo:
                     metadata.add_text(x, json.dumps(extra_pnginfo[x]))
